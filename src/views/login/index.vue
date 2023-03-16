@@ -1,10 +1,17 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { mobileRules, passwordRules, codeRules } from '@/utils/rules'
-import { showToast, showSuccessToast } from 'vant'
-import { loginByPassword } from '@/api/user'
-import { useUserStore } from '@/stores'
+//vant
+import { showToast, showSuccessToast,type FormInstance } from 'vant'
+//路由
 import { useRoute, useRouter } from 'vue-router'
+// 规则
+import { mobileRules, passwordRules, codeRules } from '@/utils/rules'
+//pinia仓库
+import { useUserStore } from '@/stores'
+//接口
+import { loginByPassword,sendMobileCode } from '@/api/user'
+//---------------------------------------------------------
+//账号密码登录
 const mobile = ref('13230000001')
 const password = ref('abc12345')
 const show = ref(false)
@@ -27,9 +34,30 @@ const login = async () => {
     console.log('---error---', error)
   }
 }
+//---------------------------------------------------------
+
 //短信登录
 const isPass = ref(true)
 const code = ref('') // 验证码
+//vant
+const time = ref(0)
+//路由
+const form = ref<FormInstance>()
+// 规则
+  const send = async () => {
+  if (time.value > 0) return
+  try {
+    await form.value?.validate('mobile')
+    await sendMobileCode(mobile.value, 'login')
+    showToast({
+      type: 'success',
+      message: '发送成功'
+    })
+  } catch (error) {
+    console.log('---error---', error)
+  }
+}
+
 </script>
 
 <template>
@@ -44,8 +72,8 @@ const code = ref('') // 验证码
       </a>
     </div>
     <!-- 表单 -->
-    <van-form autocomplete="off" @submit="login">
-      <van-field placeholder="请输入手机号" type="tel" v-model="mobile" :rules="mobileRules"></van-field>
+    <van-form autocomplete="off" @submit="login" ref="form">
+      <van-field name="mobile" placeholder="请输入手机号" type="tel" v-model="mobile" :rules="mobileRules"></van-field>
       <van-field v-if="isPass" placeholder="请输入密码" :type="`${show ? 'text' : 'password'}`" v-model="password"
         :rules="passwordRules">
         <template #button>
@@ -54,7 +82,7 @@ const code = ref('') // 验证码
       </van-field>
       <van-field v-else v-model="code" :rules="codeRules" placeholder="短信验证码">
         <template #button>
-          <span class="btn-send">发送验证码</span>
+          <span class="btn-send" @click="send">发送验证码</span>
         </template>
       </van-field>
       <div class="cp-cell">
