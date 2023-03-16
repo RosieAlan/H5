@@ -1,11 +1,9 @@
-<script lang="ts" setup>
-import {} from 'vue'
-</script>
+<script setup lang="ts"></script>
 
 <template>
-   <div>
-    登录页
-   </div>
+  <div class="login-page">
+    <cp-nav-bar title="登录" right-text="Rosie"></cp-nav-bar>
+  </div>
 </template>
-<style lang="less" scoped>
-</style>
+
+<style lang="scss" scoped></style>
