@@ -22,7 +22,6 @@ const router = useRouter()
 const route = useRoute()
 const login = async () => {
   if (!agree.value) return showToast('请勾选我已同意')
-  try {
     // 验证完毕，进行登录
     const res = isPass.value
     ? await loginByPassword(mobile.value, password.value)
@@ -32,9 +31,6 @@ const login = async () => {
     router.push((route.query.returnUrl as string) || '/user')
     // 提示下
     showSuccessToast('登录成功~')
-  } catch (error) {
-    console.log('---error---', error)
-  }
 }
 //---------------------------------------------------------
 //短信登录
