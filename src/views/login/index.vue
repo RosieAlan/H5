@@ -1,17 +1,32 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { mobileRules, passwordRules } from '@/utils/rules'
-import { showToast } from 'vant'
-const mobile = ref('')
-const password = ref('')
+import { showToast, showSuccessToast } from 'vant'
+import { loginByPassword } from '@/api/user'
+import { useUserStore } from '@/stores'
+import { useRoute, useRouter } from 'vue-router'
+const mobile = ref('13230000001')
+const password = ref('abc12345')
 const show = ref(false)
 const agree = ref(false)
 // 表单提交
-  const login = () => {
-    if (!agree.value) return showToast('请勾选我已同意')
-  
+const store = useUserStore()
+const router = useRouter()
+const route = useRoute()
+const login = async () => {
+  if (!agree.value) return showToast('请勾选我已同意')
+  try {
     // 验证完毕，进行登录
+    const res = await loginByPassword(mobile.value, password.value)
+    store.setUser(res.data)
+    // 如果有回跳地址就进行回跳，没有跳转到个人中心
+    router.push((route.query.returnUrl as string) || '/user')
+    // 提示下
+    showSuccessToast('登录成功~')
+  } catch (error) {
+    console.log('---error---', error)
   }
+}
 </script>
 
 <template>
