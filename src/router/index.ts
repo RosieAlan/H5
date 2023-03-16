@@ -1,5 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '@/stores/index'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+NProgress.configure({
+  showSpinner: false
+})
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -40,6 +45,7 @@ const router = createRouter({
 // 访问权限控制
 router.beforeEach((to) => {
   // 用户仓库
+  NProgress.start()
   const store = useUserStore()
   // 不需要登录的页面，白名单
   const wihteList = ['/login']
@@ -49,5 +55,6 @@ router.beforeEach((to) => {
 })
 router.afterEach((to) => {
   document.title = `${to.meta.title}`
+  NProgress.done()
 })
 export default router
