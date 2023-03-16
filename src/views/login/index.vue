@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { mobileRules, passwordRules } from '@/utils/rules'
+import { mobileRules, passwordRules, codeRules } from '@/utils/rules'
 import { showToast, showSuccessToast } from 'vant'
 import { loginByPassword } from '@/api/user'
 import { useUserStore } from '@/stores'
@@ -27,6 +27,9 @@ const login = async () => {
     console.log('---error---', error)
   }
 }
+//短信登录
+const isPass = ref(true)
+const code = ref('') // 验证码
 </script>
 
 <template>
@@ -34,18 +37,24 @@ const login = async () => {
     <cp-nav-bar rightText="注册" @click-right="$router.push('/register')" />
     <!-- 头部 -->
     <div class="login-head">
-      <h3>密码登录</h3>
-      <a href="javascript:;">
-        <span>短信验证码登录</span>
+      <h3>{{ isPass ? '密码登录' : '短信验证码登录' }}</h3>
+      <a href="javascript:;" @click="isPass = !isPass">
+        <span>{{ !isPass ? '密码登录' : '短信验证码登录' }}</span>
         <van-icon name="arrow"></van-icon>
       </a>
     </div>
     <!-- 表单 -->
     <van-form autocomplete="off" @submit="login">
       <van-field placeholder="请输入手机号" type="tel" v-model="mobile" :rules="mobileRules"></van-field>
-      <van-field placeholder="请输入密码" :type="`${show ? 'text' : 'password'}`" v-model="password" :rules="passwordRules">
+      <van-field v-if="isPass" placeholder="请输入密码" :type="`${show ? 'text' : 'password'}`" v-model="password"
+        :rules="passwordRules">
         <template #button>
           <cp-icon @click="show = !show" :name="`login-eye-${show ? 'on' : 'off'}`" />
+        </template>
+      </van-field>
+      <van-field v-else v-model="code" :rules="codeRules" placeholder="短信验证码">
+        <template #button>
+          <span class="btn-send">发送验证码</span>
         </template>
       </van-field>
       <div class="cp-cell">
