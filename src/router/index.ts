@@ -9,13 +9,28 @@ const router = createRouter({
     },
     {
       path: '/',
-      component: () => import('@/views/layout/index.vue')
+      component: () => import('@/views/layout/index.vue'),
+      redirect: '/home',
+      children: [
+        { path: '/home', 
+        component: () => import('@/views/home/index.vue') },
+        {
+          path: '/article',
+          component: () => import('@/views/article/index.vue')
+        },
+        {
+          path: '/notify',
+          component: () => import('@/views/notify/index.vue')
+        },
+        { path: '/user', 
+        component: () => import('@/views/user/index.vue') }
+      ]
     }
   ]
 })
 // 访问权限控制
 // 不需要登录的页面，白名单
-const wihteList = ['/login']
+const wihteList = ['/login','/register']
 router.beforeEach(to => {
   // 用户仓库
   const store = useUserStore()
