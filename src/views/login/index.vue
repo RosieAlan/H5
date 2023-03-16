@@ -1,9 +1,17 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { mobileRules, passwordRules } from '@/utils/rules'
+import { showToast } from 'vant'
 const mobile = ref('')
 const password = ref('')
-const agree = ref(false)
 const show = ref(false)
+const agree = ref(false)
+// 表单提交
+  const login = () => {
+    if (!agree.value) return showToast('请勾选我已同意')
+  
+    // 验证完毕，进行登录
+  }
 </script>
 
 <template>
@@ -18,22 +26,11 @@ const show = ref(false)
       </a>
     </div>
     <!-- 表单 -->
-    <van-form autocomplete="off">
-      <van-field
-        placeholder="请输入手机号"
-        type="tel"
-        v-model="mobile"
-      ></van-field>
-      <van-field
-        placeholder="请输入密码"
-        :type="`${show ? 'text' : 'password'}`"
-        v-model="password"
-      >
-        <template #right-icon>
-          <cp-icon
-            @click="show = !show"
-            :name="`login-eye-${show ? 'on' : 'off'}`"
-          />
+    <van-form autocomplete="off" @submit="login">
+      <van-field placeholder="请输入手机号" type="tel" v-model="mobile" :rules="mobileRules"></van-field>
+      <van-field placeholder="请输入密码" :type="`${show ? 'text' : 'password'}`" v-model="password" :rules="passwordRules">
+        <template #button>
+          <cp-icon @click="show = !show" :name="`login-eye-${show ? 'on' : 'off'}`" />
         </template>
       </van-field>
       <div class="cp-cell">
@@ -45,7 +42,7 @@ const show = ref(false)
         </van-checkbox>
       </div>
       <div class="cp-cell">
-        <van-button block round type="primary">登 录</van-button>
+        <van-button block round type="primary" native-type="submit">登 录</van-button>
       </div>
       <div class="cp-cell">
         <a href="javascript:;">忘记密码？</a>
@@ -66,26 +63,32 @@ const show = ref(false)
   &-page {
     padding-top: 46px;
   }
+
   &-head {
     display: flex;
     padding: 30px 30px 50px;
     justify-content: space-between;
     align-items: flex-end;
     line-height: 1;
+
     h3 {
       font-weight: normal;
       font-size: 24px;
     }
+
     a {
       font-size: 15px;
     }
   }
+
   &-other {
     margin-top: 60px;
     padding: 0 30px;
+
     .icon {
       display: flex;
       justify-content: center;
+
       img {
         width: 36px;
         height: 36px;
@@ -94,8 +97,10 @@ const show = ref(false)
     }
   }
 }
+
 .van-form {
   padding: 0 14px;
+
   .cp-cell {
     height: 52px;
     line-height: 24px;
@@ -103,6 +108,7 @@ const show = ref(false)
     box-sizing: border-box;
     display: flex;
     align-items: center;
+
     .van-checkbox {
       a {
         color: var(--cp-primary);
@@ -110,8 +116,10 @@ const show = ref(false)
       }
     }
   }
+
   .btn-send {
     color: var(--cp-primary);
+
     &.active {
       color: rgba(22, 194, 163, 0.5);
     }
