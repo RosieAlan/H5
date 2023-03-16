@@ -1,11 +1,12 @@
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
+import path from 'path'
 import vue from '@vitejs/plugin-vue'
 // 实现按需引入组件
 import Components from 'unplugin-vue-components/vite'
 // 解析器，支持vant、element-ui、element-plus
 import { VantResolver } from 'unplugin-vue-components/resolvers'
-
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 export default defineConfig({
   plugins: [
     vue(),
@@ -14,6 +15,10 @@ export default defineConfig({
       dts: false,
       // 在main.ts已经引入了所有的样式，不需要自动导入样式了，只需要自动导入组件即可
       resolvers: [VantResolver({ importStyle: false })]
+    }),
+    createSvgIconsPlugin({
+      // 指定图标文件夹，绝对路径（NODE代码）
+      iconDirs: [path.resolve(process.cwd(), 'src/icons')]
     })
   ],
   resolve: {

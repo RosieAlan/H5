@@ -5,6 +5,7 @@ import pinia from './stores'
 import './assets/main.css'
 import 'vant/lib/index.css'
 import './assets/main.scss'
+import 'virtual:svg-icons-register'
 const app = createApp(App)
 
 app.use(router)
