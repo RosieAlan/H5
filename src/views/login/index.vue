@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, onUnmounted } from 'vue'
 //vant
-import { showToast, showSuccessToast,type FormInstance } from 'vant'
+import { showToast, showSuccessToast, type FormInstance } from 'vant'
 //路由
 import { useRoute, useRouter } from 'vue-router'
 // 规则
@@ -9,7 +9,7 @@ import { mobileRules, passwordRules, codeRules } from '@/utils/rules'
 //pinia仓库
 import { useUserStore } from '@/stores'
 //接口
-import { loginByPassword,sendMobileCode } from '@/api/user'
+import { loginByPassword, sendMobileCode } from '@/api/user'
 //---------------------------------------------------------
 //账号密码登录
 const mobile = ref('13230000001')
@@ -35,7 +35,6 @@ const login = async () => {
   }
 }
 //---------------------------------------------------------
-
 //短信登录
 const isPass = ref(true)
 const code = ref('') // 验证码
@@ -44,7 +43,8 @@ const time = ref(0)
 //路由
 const form = ref<FormInstance>()
 // 规则
-  const send = async () => {
+
+const send = async () => {
   if (time.value > 0) return
   try {
     await form.value?.validate('mobile')
@@ -53,11 +53,22 @@ const form = ref<FormInstance>()
       type: 'success',
       message: '发送成功'
     })
+    time.value = 60
+    clearInterval(timerId)
+    timerId = window.setInterval(() => {
+      time.value--
+      if (time.value <= 0) clearInterval(timerId)
+    }, 1000)
   } catch (error) {
     console.log('---error---', error)
   }
 }
-
+//倒计时逻辑
+let timerId: number
+//生命周期,记得导入
+onUnmounted(() => {
+  clearInterval(timerId)
+})
 </script>
 
 <template>
@@ -82,7 +93,9 @@ const form = ref<FormInstance>()
       </van-field>
       <van-field v-else v-model="code" :rules="codeRules" placeholder="短信验证码">
         <template #button>
-          <span class="btn-send" @click="send">发送验证码</span>
+          <span class="btn-send" :class="{ active: time > 0 }" @click="send">
+            {{ time > 0 ? `${time}s后再次发送` : '发送验证码' }}
+          </span>
         </template>
       </van-field>
       <div class="cp-cell">
