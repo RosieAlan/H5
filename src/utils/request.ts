@@ -42,7 +42,7 @@ instance.interceptors.response.use(
     if (err.response.status === 401) {
       // 我们这个项目，后台约定，token无效就是401
       const store = useUserStore()
-      store.deleteUser()
+      store.delUser()
 
       // 跳转到登录页面，并且携带回调地址
       router.push(`/login?returnUrl=${router.currentRoute.value.fullPath}`)
@@ -57,10 +57,7 @@ const request = <T>(
   method: Method = 'GET',
   submitData?: object
 ) => {
-  /**
-   * 参数1：泛型，但是这个类型，会赋值给res.data
-   * 参数2：服务器返回数据的泛型，这个数据直接会赋值给res
-   */
+
   return instance.request<T, ApiRes<T>>({
     url,
     method,
