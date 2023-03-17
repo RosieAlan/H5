@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { getPatientList } from '@/api/user'
+import { getPatientList, addPatient } from '@/api/user'
 import type { Patient } from '@/types/user'
 import { onMounted, ref, computed } from 'vue'
-
+import { nameRules, idCardRules } from '@/utils/rules'
+import { showSuccessToast, showConfirmDialog, type FormInstance } from 'vant'
 // 1. 页面初始化加载数据
 const list = ref<Patient[]>([])
 const loadList = async () => {
@@ -45,7 +46,30 @@ const initPatient: Patient = {
     gender: 1,
     defaultFlag: 0
 }
-const gender = ref<string | number>(1)
+//保存校验--------------------
+const form = ref<FormInstance>()
+    const onSubmit = async () => {
+  try {
+    await form.value?.validate()
+    // 身份证倒数第二位，单数是男，双数是女
+    const gender = +patient.value.idCard.slice(-2, -1) % 2
+    if (gender !== patient.value.gender) {
+      await showConfirmDialog({
+        title: '温馨提示',
+        message: '填写的性别和身份证号中的不一致\n您确认提交吗？'
+      })
+    }
+    console.log('通过校验')
+    // 添加
+    await addPatient(patient.value)
+    show.value = false
+    loadList()
+    showSuccessToast('添加成功~')
+    // 校验通过
+  } catch (error) {
+    console.log('---error---', error)
+  }
+}
 </script>
 
 <template>
@@ -72,14 +96,14 @@ const gender = ref<string | number>(1)
         </div>
         <!-- 侧边栏 -->
         <van-popup v-model:show="show" position="right">
-            <cp-nav-bar :back="() => (show = false)" title="添加患者" right-text="保存"></cp-nav-bar>
+            <cp-nav-bar  :back="() => (show = false)" title="添加患者" @click-right="onSubmit" right-text="保存"></cp-nav-bar>
             <van-form autocomplete="off" ref="form">
-                <van-field v-model="patient.name" label="真实姓名" placeholder="请输入真实姓名" />
-                <van-field v-model="patient.idCard" label="身份证号" placeholder="请输入身份证号" />
+                <van-field :rules="nameRules" v-model="patient.name" label="真实姓名" placeholder="请输入真实姓名" />
+                <van-field  :rules="idCardRules" v-model="patient.idCard" label="身份证号" placeholder="请输入身份证号" />
                 <van-field label="性别" class="pb4">
                     <!-- 单选按钮组件 -->a
                     <template #input>
-                        <cp-radio-btn  v-model="gender" :options="options"></cp-radio-btn>
+                        <cp-radio-btn  v-model="patient.gender" :options="options"></cp-radio-btn>
                     </template>
                 </van-field>
                 <van-field label="默认就诊人">
