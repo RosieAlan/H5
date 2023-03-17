@@ -2,6 +2,9 @@
 import { getUserInfo } from '@/api/user'
 import type { UserInfo } from '@/types/user'
 import { onMounted, ref } from 'vue'
+import { useUserStore } from '@/stores'
+import { showConfirmDialog } from 'vant'
+import { useRouter } from 'vue-router'
 const user = ref<UserInfo>()
 onMounted(async () => {
   const res = await getUserInfo()
@@ -18,6 +21,21 @@ const tools = [
   { label: '官方客服', path: '/' },
   { label: '设置', path: '/' }
 ]
+//用户退出
+const userStore = useUserStore()
+const router = useRouter()
+const logout = async () => {
+  try {
+    await showConfirmDialog({
+      title: '温馨提示',
+      message: '您确认要退出吗？'
+    })
+    userStore.delUser()
+    router.push('/login')
+  } catch (error) {
+    console.log('---error---', error)
+  }
+}
 </script>
 
 <template>
@@ -87,6 +105,7 @@ const tools = [
         <template #icon><cp-icon :name="`user-tool-0${i + 1}`" /></template>
       </van-cell>
     </div>
+    <a class="logout" href="javascript:;" @click="logout">退出登录</a>
   </div>
 </template>
 
