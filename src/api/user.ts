@@ -15,3 +15,6 @@ export const getUserInfo = () => request<UserInfo>('/patient/myUser')
 export const getPatientList = () => request<Patient[]>('/patient/mylist')
 // 添加患者信息
 export const addPatient = (patient: Patient) =>request('/patient/add', 'POST', patient)
+// 编辑患者信息
+export const editPatient = (patient: Patient) =>
+  request('/patient/update', 'PUT', patient)
