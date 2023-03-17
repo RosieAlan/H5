@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getPatientList, addPatient,editPatient  } from '@/api/user'
+import { getPatientList, addPatient, editPatient } from '@/api/user'
 import type { Patient } from '@/types/user'
 import { onMounted, ref, computed } from 'vue'
 import { nameRules, idCardRules } from '@/utils/rules'
@@ -67,9 +67,7 @@ const onSubmit = async () => {
     }
     console.log('通过校验')
     // 添加
-    patient.value.id
-      ? await editPatient(patient.value)
-      : await addPatient(patient.value)
+    patient.value.id ? await editPatient(patient.value) : await addPatient(patient.value)
     show.value = false
     loadList()
     showSuccessToast(patient.value.id ? '修改成功~' : '添加成功~')
@@ -133,6 +131,9 @@ const onSubmit = async () => {
           </template>
         </van-field>
       </van-form>
+      <van-action-bar v-if="patient.id">
+        <van-action-bar-button>删除</van-action-bar-button>
+      </van-action-bar>
     </van-popup>
     <div class="patient-add" v-if="list.length < 6" @click="showPopup()"></div>
   </div>
@@ -148,6 +149,14 @@ const onSubmit = async () => {
       height: 100%;
       padding-top: 46px;
       box-sizing: border-box;
+    }
+    .van-action-bar {
+      padding: 0 10px;
+      margin-bottom: 10px;
+      .van-button {
+        color: var(--cp-price);
+        background-color: var(--cp-bg);
+      }
     }
   }
 }
@@ -221,6 +230,7 @@ const onSubmit = async () => {
       color: var(--cp-primary);
     }
   }
+  // 底部操作栏
 }
 
 .patient-add {
