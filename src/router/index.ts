@@ -39,6 +39,11 @@ const router = createRouter({
           meta: { title: '个人中心' }
         }
       ]
+    },
+    {
+      path: '/user/patient',
+      component: () => import('@/views/user/patient-page.vue'),
+      meta: { title: '家庭档案' }
     }
   ]
 })
