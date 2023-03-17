@@ -8,13 +8,23 @@ onMounted(async () => {
   console.log('res', res);
   user.value = res.data
 })
+//快捷工具栏
+const tools = [
+  { label: '我的问诊', path: '/user/consult' },
+  { label: '我的处方', path: '/' },
+  { label: '家庭档案', path: '/user/patient' },
+  { label: '地址管理', path: '/user/address' },
+  { label: '我的评价', path: '/' },
+  { label: '官方客服', path: '/' },
+  { label: '设置', path: '/' }
+]
 </script>
 
 <template>
- <div class="user-page" v-if="user">
+  <div class="user-page" v-if="user">
     <div class="user-page-head">
       <div class="top">
-       <!-- <van-image round fit="cover" :src="user.avatar" /> -->
+        <!-- <van-image round fit="cover" :src="user.avatar" /> -->
         <div class="name">
           <p>{{ user.account }}</p>
           <p><van-icon name="edit" /></p>
@@ -46,32 +56,37 @@ onMounted(async () => {
       </div>
       <van-row>
         <van-col span="6">
-           <van-badge :content="user.orderInfo.paidNumber || ''">
+          <van-badge :content="user.orderInfo.paidNumber || ''">
             <cp-icon name="user-paid" />
-           </van-badge>
+          </van-badge>
           <p>待付款</p>
         </van-col>
         <van-col span="6">
-           <van-badge :content="user.orderInfo.shippedNumber || ''">
+          <van-badge :content="user.orderInfo.shippedNumber || ''">
             <cp-icon name="user-shipped" />
-           </van-badge>
+          </van-badge>
           <p>待发货</p>
         </van-col>
         <van-col span="6">
-           <van-badge :content="user.orderInfo.receivedNumber || ''">
+          <van-badge :content="user.orderInfo.receivedNumber || ''">
             <cp-icon name="user-received" />
-           </van-badge>
+          </van-badge>
           <p>待收货</p>
         </van-col>
         <van-col span="6">
-           <van-badge :content="user.orderInfo.finishedNumber || ''">
+          <van-badge :content="user.orderInfo.finishedNumber || ''">
             <cp-icon name="user-finished" />
-           </van-badge>
+          </van-badge>
           <p>已完成</p>
         </van-col>
       </van-row>
     </div>
-    
+    <div class="user-page-group">
+      <h3>快捷工具</h3>
+      <van-cell v-for="(item, i) in tools" :key="item.label" :title="item.label" :to="item.path" is-link :border="false">
+        <template #icon><cp-icon :name="`user-tool-0${i + 1}`" /></template>
+      </van-cell>
+    </div>
   </div>
 </template>
 
@@ -197,4 +212,5 @@ onMounted(async () => {
     text-align: center;
     color: var(--cp-price);
   }
-}</style>
+}
+</style>
