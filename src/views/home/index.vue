@@ -3,6 +3,8 @@ import { ref } from 'vue'
 import type { KnowledgeType } from '@/types/consult'
 import KnowledgeList from './components/knowledge-list.vue'
 import knowledgeCard from './components/knowledge-card.vue'
+import FollowDoctor from './components/follow-doctor.vue'
+
 const active = ref<KnowledgeType>('recommend')
 const list = ref<number[]>([])
 const loading = ref(false)
@@ -93,7 +95,10 @@ const onLoad = () => {
       </van-swipe>
     </div>
     <van-tabs shrink sticky v-model:active="active">
-      <van-tab title="关注" name="like"><knowledge-list type="like" /> </van-tab>
+      <van-tab title="关注" name="like">
+        <follow-doctor></follow-doctor>
+        <knowledge-list type="like" />
+      </van-tab>
       <van-tab title="推荐" name="recommend"><knowledge-list type="recommend" /></van-tab>
       <van-tab title="减脂" name="fatReduction"><knowledge-list type="fatReduction" /></van-tab>
       <van-tab title="饮食" name="food"><knowledge-list type="food" /></van-tab>
