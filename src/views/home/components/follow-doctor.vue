@@ -1,5 +1,15 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import DoctorCard from './doctor-card.vue'
+import type { DoctorList } from '@/types/consult'
+import { getDoctorPage } from '@/api/consult'
+
+const list = ref<DoctorList>()
+const loadData = async () => {
+  const res = await getDoctorPage({ current: 1, pageSize: 5 })
+  list.value = res.data.rows
+}
+onMounted(() => loadData())
 </script>
 
 <template>
@@ -10,9 +20,9 @@ import DoctorCard from './doctor-card.vue'
     </div>
     <div class="body">
       <!-- swipe 组件 -->
-      <van-swipe :width="150" :show-indicators="false" :loop="false">
-        <van-swipe-item v-for="item in 5" :key="item">
-          <doctor-card />
+      <van-swipe width="150" :show-indicators="false" :loop="false">
+        <van-swipe-item v-for="item in list" :key="item.id">
+          <doctor-card :item="item" />
         </van-swipe-item>
       </van-swipe>
     </div>
