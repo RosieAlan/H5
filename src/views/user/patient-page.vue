@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getPatientList, addPatient, editPatient } from '@/api/user'
+import { getPatientList, addPatient, editPatient,delPatient  } from '@/api/user'
 import type { Patient } from '@/types/user'
 import { onMounted, ref, computed } from 'vue'
 import { nameRules, idCardRules } from '@/utils/rules'
@@ -76,6 +76,23 @@ const onSubmit = async () => {
     console.log('---error---', error)
   }
 }
+//----------------------------------------------删除
+const remove = async () => {
+  if (patient.value.id) {
+    try {
+      await showConfirmDialog({
+        title: '温馨提示',
+        message: `您确认要删除 ${patient.value.name} 患者信息吗 ？`
+      })
+      await delPatient(patient.value.id)
+      show.value = false
+      loadList()
+      showSuccessToast('删除成功')
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}
 </script>
 
 <template>
@@ -132,7 +149,7 @@ const onSubmit = async () => {
         </van-field>
       </van-form>
       <van-action-bar v-if="patient.id">
-        <van-action-bar-button>删除</van-action-bar-button>
+        <van-action-bar-button @click="remove">删除</van-action-bar-button>
       </van-action-bar>
     </van-popup>
     <div class="patient-add" v-if="list.length < 6" @click="showPopup()"></div>
