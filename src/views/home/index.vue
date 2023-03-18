@@ -2,7 +2,25 @@
 import { ref } from 'vue'
 import type { KnowledgeType } from '@/types/consult'
 import KnowledgeList from './components/knowledge-list.vue'
+import knowledgeCard from './components/knowledge-card.vue'
 const active = ref<KnowledgeType>('recommend')
+const list = ref<number[]>([])
+const loading = ref(false)
+const finished = ref(false)
+const onLoad = () => {
+  // 加载数据
+  console.log('loading')
+  // 模拟加载更多
+  setTimeout(() => {
+    const data = [1, 2, 3]
+    list.value.push(...data)
+    // 模拟加载完毕
+    if (list.value.length > 20) {
+      finished.value = true
+    }
+    loading.value = false
+  }, 1000)
+}
 </script>
 
 <template>
@@ -75,11 +93,21 @@ const active = ref<KnowledgeType>('recommend')
       </van-swipe>
     </div>
     <van-tabs shrink sticky v-model:active="active">
-      <van-tab title="关注" name="like"><knowledge-list /> </van-tab>
-      <van-tab title="推荐" name="recommend"><knowledge-list /></van-tab>
-      <van-tab title="减脂" name="fatReduction"><knowledge-list /></van-tab>
-      <van-tab title="饮食" name="food"><knowledge-list /></van-tab>
+      <van-tab title="关注" name="like"><knowledge-list type="like" /> </van-tab>
+      <van-tab title="推荐" name="recommend"><knowledge-list type="recommend" /></van-tab>
+      <van-tab title="减脂" name="fatReduction"><knowledge-list type="fatReduction" /></van-tab>
+      <van-tab title="饮食" name="food"><knowledge-list type="food" /></van-tab>
     </van-tabs>
+    <div class="knowledge-list">
+      <van-list
+        v-model:loading="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+      >
+        <knowledge-card v-for="(item, i) in list" :key="i" />
+      </van-list>
+    </div>
   </div>
 </template>
 
