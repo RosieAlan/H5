@@ -4,7 +4,10 @@ import type { KnowledgeType } from '@/types/consult'
 import KnowledgeList from './components/knowledge-list.vue'
 // import knowledgeCard from './components/knowledge-card.vue'
 import FollowDoctor from './components/follow-doctor.vue'
+import { useConsultStore } from '@/stores'
+import { ConsultType } from '@/enums'
 
+const store = useConsultStore()
 const active = ref<KnowledgeType>('recommend')
 const list = ref<number[]>([])
 const loading = ref(false)
@@ -43,7 +46,7 @@ const onLoad = () => {
           </router-link>
         </van-col>
         <van-col span="8">
-          <router-link to="/consult/fast" class="nav">
+          <router-link to="/consult/fast" @click="store.setType(ConsultType.Fast)" class="nav">
             <cp-icon name="home-graphic"></cp-icon>
             <p class="title">极速问诊</p>
             <p class="desc">20s医生极速回复</p>

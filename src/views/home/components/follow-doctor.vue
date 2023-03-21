@@ -22,7 +22,7 @@ onMounted(() => loadData())
       <!-- swipe 组件 -->
       <van-swipe width="150" :show-indicators="false" :loop="false">
         <van-swipe-item v-for="item in list" :key="item.id">
-          <doctor-card :item="item" />
+          <doctor-card class="inner" :item="item" />
         </van-swipe-item>
       </van-swipe>
     </div>
@@ -47,6 +47,7 @@ onMounted(() => loadData())
   .body {
     width: 100%;
     overflow: scroll;
+    
   }
 }
 </style>
