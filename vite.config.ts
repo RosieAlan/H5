@@ -8,6 +8,10 @@ import Components from 'unplugin-vue-components/vite'
 import { VantResolver } from 'unplugin-vue-components/resolvers'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 export default defineConfig({
+  server: {
+    open: true,
+    port: 80
+  },
   plugins: [
     vue(),
     Components({
