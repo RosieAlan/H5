@@ -64,7 +64,13 @@ const router = createRouter({
       path: '/consult/pay',
       component: () => import('@/views/consult/consult-pay.vue'),
       meta: { title: '问诊支付' }
+    },
+    {
+      path: '/room',
+      component: () => import('@/views/room/index.vue'),
+      meta: { title: '问诊室' }
     }
+    
   ]
 })
 // 访问权限控制
